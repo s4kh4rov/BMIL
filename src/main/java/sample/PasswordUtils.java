@@ -1,5 +1,7 @@
 package sample;
 
+import org.ejml.simple.SimpleMatrix;
+
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -10,6 +12,18 @@ public class PasswordUtils {
     public static final String MEDIUM = "Средний";
     public static final String HARD = "Сложный";
     public static final int MAX_PSWD_COMPLEXITY = 6;
+    public static final SimpleMatrix HAAR_MATRIX = new SimpleMatrix(
+            new double[][] {
+                    new double[] {1, 1, 1, 1, 1, 1, 1, 1},
+                    new double[] { 1, 1, 1, 1, -1, -1, -1, -1},
+                    new double[] {Math.sqrt(2), Math.sqrt(2), -Math.sqrt(2), -Math.sqrt(2), 0, 0, 0, 0},
+                    new double[] {0, 0, 0, 0, Math.sqrt(2), Math.sqrt(2), -Math.sqrt(2), -Math.sqrt(2)},
+                    new double[] {2, -2, 0, 0, 0, 0, 0, 0},
+                    new double[] {0, 0, 2, -2, 0, 0, 0, 0},
+                    new double[] {0, 0, 0, 0, 2, -2, 0, 0},
+                    new double[] {0, 0, 0, 0, 0, 0, 2, -2}
+            }
+    );
     public static NavigableMap<Integer, String> complexityMap = new TreeMap() {{
         put(0, LOW);
         put(3, MEDIUM);

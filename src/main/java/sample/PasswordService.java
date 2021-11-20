@@ -7,7 +7,7 @@ public class PasswordService {
     private Map<OverlayType, Integer> overlays;
     private KeyEntity prevKeyEntity;
     private boolean isOverlay;
-
+    private int AMPLITUDE = 2;
     public boolean isOverlay() {
         return isOverlay;
     }
@@ -54,6 +54,51 @@ public class PasswordService {
 
     public String getOverlayStatistic() {
         return "1 вид " + overlays.get(OverlayType.FIRST_TYPE) + " \n2 вид " + overlays.get(OverlayType.SECOND_TYPE);
+    }
+
+    public int calculate(long t, List<KeyEntity> list) {
+        int result = 0;
+        for (KeyEntity k : list) {
+            if (k.getDownTime() <= t && t <= k.getUpTime()) {
+                result += AMPLITUDE;
+            }
+        }
+        return result;
+    }
+
+    public double calculateHaar(int r, int m, long t) {
+        double tDouble = t / 1000.0;
+        double result = 0;
+        if (tDouble >= 1.0) {
+            tDouble = 0.999;
+        }
+        if (((m - 1) / Math.pow(2, r)) <= tDouble && tDouble < ((m - 0.5) / Math.pow(2, r))) {
+            result = Math.pow(2, r / 2.0);
+        } else if (((m - 0.5) / Math.pow(2, r)) <= tDouble && tDouble <= (m / Math.pow(2, r))) {
+            result = -Math.pow(2, r / 2.0);
+        }
+
+        return result;
+
+    }
+
+    public double[] calculateVector(List<KeyEntity> list) {
+        double[] vector = new double[list.size()];
+        double result;
+        double haar;
+        double countVariable = 1.0 / list.size();
+        double sum = 0;
+        for (int i = 0; i < list.size(); i++) {
+            for (int k = 0; k < list.size(); k++) {
+                result = calculate(list.get(k).getDownTime(), list);
+                haar = calculateHaar(k, i, list.get(k).getUpTime() - list.get(k).getDownTime());
+                sum += result * haar;
+            }
+            vector[i]= sum*countVariable;
+            sum=0;
+
+        }
+        return vector;
     }
 
     private enum OverlayType {

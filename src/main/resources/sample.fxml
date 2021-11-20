@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1500.0" style="-fx-background-color: white" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="677.0" prefWidth="1515.0" style="-fx-background-color: white" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <TextField fx:id="pswField" layoutX="163.0" layoutY="90.0" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="25.0" prefWidth="294.0" />
       <BarChart fx:id="barChart" animated="false" layoutX="150.0" layoutY="175.0">
@@ -55,5 +55,8 @@
             <Font size="16.0" />
          </font>
       </Label>
+      <Button fx:id="vectorParamBtn" layoutX="61.0" layoutY="585.0" mnemonicParsing="false" onAction="#showVector" text="Вектор параметров" />
+      <Label fx:id="vectorParamLabel" layoutX="231.0" layoutY="585.0" prefHeight="25.0" prefWidth="863.0" />
+      <Button layoutX="61.0" layoutY="638.0" mnemonicParsing="false" onAction="#saveUser" prefHeight="25.0" prefWidth="155.0" text="Сохранить в бд" />
    </children>
 </Pane>

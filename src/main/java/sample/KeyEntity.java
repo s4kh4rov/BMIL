@@ -33,4 +33,13 @@ public class KeyEntity {
     public void setDownTime(long downTime) {
         this.downTime = downTime;
     }
+
+    @Override
+    public String toString() {
+        return "KeyEntity{" +
+                "key='" + key + '\'' +
+                ", upTime=" + upTime +
+                ", downTime=" + downTime +
+                '}';
+    }
 }

@@ -1,4 +1,13 @@
 package sample;
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
@@ -8,7 +17,14 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import org.bson.Document;
 
+import javax.xml.soap.Node;
+import java.io.IOException;
 import java.util.*;
 
 import static sample.PasswordUtils.*;
@@ -31,6 +47,8 @@ public class Controller {
     private ProgressBar complexityProgressBar;
     @FXML
     private Label overlay;
+    @FXML
+    private Label vectorParamLabel;
 
     private String password;
     private List<Long> passwordDynamic;
@@ -38,7 +56,9 @@ public class Controller {
     private XYChart.Series barChartSeries = new XYChart.Series();
     private XYChart.Series lineChartSeries = new XYChart.Series();
     private PasswordService passwordService;
+    private List <KeyEntity> allKeyPressed;
     private int counter = 0;
+    private double[] vector;
 
 
     @FXML
@@ -48,12 +68,14 @@ public class Controller {
         passwordDynamic = new ArrayList();
         passwordEntrySpeed = new ArrayList();
         passwordService = new PasswordService();
+        allKeyPressed = new ArrayList<>();
     }
 
 
     public void onKeyReleased(KeyEvent keyEvent) {
         KeyEntity k = passwordService.getKeyEntity(keyEvent.getText());
         k.setUpTime(new Date().getTime());
+        allKeyPressed.add(k);
         if (passwordService.clampedKeysSize() == 1 && passwordService.isOverlay()) {
             passwordService.checkOverlay(keyEvent.getText());
             overlay.setText(passwordService.getOverlayStatistic());
@@ -113,6 +135,34 @@ public class Controller {
         overlay.setText("");
         passwordEntrySpeed.clear();
         passwordDynamic.clear();
+        vectorParamLabel.setText("");
+        allKeyPressed.clear();
 
+    }
+
+    public void showVector(ActionEvent actionEvent) {
+        vector = passwordService.calculateVector(allKeyPressed);
+        vectorParamLabel.setText(Arrays.toString(vector));
+    }
+
+    public void saveUser(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource(
+                        "/user.fxml"
+                )
+        );
+
+        Stage stage = new Stage(StageStyle.DECORATED);
+        stage.setScene(
+                new Scene(
+                        (Pane) loader.load()
+                )
+        );
+
+        UserController controller =
+                loader.getController();
+        controller.initialize(vector);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.show();
     }
 }
