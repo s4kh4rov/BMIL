@@ -5,10 +5,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="677.0" prefWidth="1515.0" style="-fx-background-color: white" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1073.0" prefWidth="1566.0" style="-fx-background-color: white" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
-      <TextField fx:id="pswField" layoutX="163.0" layoutY="90.0" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="25.0" prefWidth="294.0" />
-      <BarChart fx:id="barChart" animated="false" layoutX="150.0" layoutY="175.0">
+      <TextField fx:id="pswField" layoutX="163.0" layoutY="43.0" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="25.0" prefWidth="294.0" />
+      <BarChart fx:id="barChart" animated="false" layoutX="80.0" layoutY="221.0">
         <xAxis>
           <CategoryAxis animated="false" side="BOTTOM" />
         </xAxis>
@@ -16,8 +16,8 @@
           <NumberAxis animated="false" side="LEFT" />
         </yAxis>
       </BarChart>
-      <Button fx:id="clearBtn" layoutX="498.0" layoutY="90.0" mnemonicParsing="false" onMousePressed="#onMousePressedClearBtn" prefHeight="25.0" prefWidth="92.0" text="Очистить" />
-      <LineChart fx:id="lineChart" animated="false" layoutX="663.0" layoutY="175.0">
+      <Button fx:id="clearBtn" layoutX="479.0" layoutY="43.0" mnemonicParsing="false" onMousePressed="#onMousePressedClearBtn" prefHeight="25.0" prefWidth="92.0" text="Очистить" />
+      <LineChart fx:id="lineChart" animated="false" layoutX="622.0" layoutY="221.0">
         <xAxis>
           <CategoryAxis animated="false" side="BOTTOM" />
         </xAxis>
@@ -25,38 +25,43 @@
           <NumberAxis animated="false" side="LEFT" />
         </yAxis>
       </LineChart>
-      <Label layoutX="680.0" layoutY="58.0" prefHeight="40.0" prefWidth="134.0" text="Мат. ожидание">
+      <Label layoutX="675.0" layoutY="25.0" prefHeight="40.0" prefWidth="134.0" text="Мат. ожидание">
          <font>
             <Font size="16.0" />
          </font></Label>
-      <Label fx:id="expectation" layoutX="801.0" layoutY="58.0" prefHeight="40.0" prefWidth="100.0">
+      <Label fx:id="expectation" layoutX="879.0" layoutY="25.0" prefHeight="40.0" prefWidth="100.0">
          <font>
             <Font size="16.0" />
          </font></Label>
-      <Label layoutX="680.0" layoutY="107.0" prefHeight="40.0" prefWidth="134.0" text="Дисперсия">
+      <Label layoutX="675.0" layoutY="77.0" prefHeight="40.0" prefWidth="134.0" text="Дисперсия">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label fx:id="dispersion" layoutX="809.0" layoutY="111.0" prefHeight="40.0" prefWidth="100.0" />
-      <ProgressBar fx:id="complexityProgressBar" layoutX="163.0" layoutY="135.0" prefHeight="18.0" prefWidth="294.0" progress="0.0" />
-      <Label fx:id="overlay" layoutX="1184.0" layoutY="102.0" prefHeight="59.0" prefWidth="72.0">
+      <Label fx:id="dispersion" layoutX="879.0" layoutY="82.0" prefHeight="40.0" prefWidth="100.0" />
+      <ProgressBar fx:id="complexityProgressBar" layoutX="163.0" layoutY="88.0" prefHeight="18.0" prefWidth="294.0" progress="0.0" />
+      <Label fx:id="overlay" layoutX="871.0" layoutY="162.0" prefHeight="59.0" prefWidth="72.0">
          <font>
             <Font size="16.0" />
          </font></Label>
-      <Label fx:id="holdTime" layoutX="1184.0" layoutY="58.0" prefHeight="40.0" prefWidth="72.0" />
-      <Label layoutX="1022.0" layoutY="58.0" prefHeight="40.0" prefWidth="141.0" text="Время удержания">
+      <Label fx:id="holdTime" layoutX="882.0" layoutY="122.0" prefHeight="40.0" prefWidth="72.0" />
+      <Label layoutX="675.0" layoutY="122.0" prefHeight="40.0" prefWidth="141.0" text="Время удержания">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="1022.0" layoutY="110.0" prefHeight="34.0" prefWidth="141.0" text="Наложения">
+      <Label layoutX="675.0" layoutY="175.0" prefHeight="34.0" prefWidth="141.0" text="Наложения">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Button fx:id="vectorParamBtn" layoutX="61.0" layoutY="585.0" mnemonicParsing="false" onAction="#showVector" text="Вектор параметров" />
-      <Label fx:id="vectorParamLabel" layoutX="231.0" layoutY="585.0" prefHeight="25.0" prefWidth="863.0" />
-      <Button layoutX="61.0" layoutY="638.0" mnemonicParsing="false" onAction="#saveUser" prefHeight="25.0" prefWidth="155.0" text="Сохранить в бд" />
+      <Button fx:id="vectorParamBtn" layoutX="102.0" layoutY="639.0" mnemonicParsing="false" onAction="#showVector" prefHeight="25.0" prefWidth="308.0" text="Вычислить вектор параметров" />
+      <Label fx:id="vectorParamLabel" layoutX="102.0" layoutY="679.0" prefHeight="25.0" prefWidth="863.0" />
+
+       <Button fx:id="save" layoutX="140.0" layoutY="846.0" mnemonicParsing="false" onAction="#saveUser" prefHeight="26.0" prefWidth="93.0" text="Сохранить" />
+       <TextField fx:id="name" layoutX="163.0" layoutY="734.0" />
+       <Label layoutX="109.0" layoutY="737.0" prefHeight="18.0" prefWidth="62.0" text="Имя" />
+       <Label layoutX="105.0" layoutY="781.0" prefHeight="18.0" prefWidth="70.0" text="Пароль" />
+       <PasswordField fx:id="passw" layoutX="163.0" layoutY="778.0" />
    </children>
 </Pane>

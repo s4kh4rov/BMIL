@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -22,6 +23,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.bson.Document;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.xml.soap.Node;
 import java.io.IOException;
@@ -49,6 +51,12 @@ public class Controller {
     private Label overlay;
     @FXML
     private Label vectorParamLabel;
+    @FXML
+    private TextField name;
+    @FXML
+    private TextField email;
+    @FXML
+    private PasswordField passw;
 
     private String password;
     private List<Long> passwordDynamic;
@@ -59,7 +67,8 @@ public class Controller {
     private List <KeyEntity> allKeyPressed;
     private int counter = 0;
     private double[] vector;
-
+    private static final String DB_NAME = "bmil";
+    private static final String COLLECTION_NAME = "users";
 
     @FXML
     private void initialize() {
@@ -146,23 +155,16 @@ public class Controller {
     }
 
     public void saveUser(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource(
-                        "/user.fxml"
-                )
-        );
+        try (MongoClient mongoClient = MongoClients.create()) {
+            MongoDatabase database = mongoClient.getDatabase(DB_NAME);
+            MongoCollection collection = database.getCollection(COLLECTION_NAME);
+            Document user = new Document();
+            user.put("name", name.getText());
+            user.put("email","fghg");
+            user.put("password", BCrypt.hashpw(passw.getText(),BCrypt.gensalt()));
+            user.put("vector",Arrays.toString(vector));
+            collection.insertOne(user);
 
-        Stage stage = new Stage(StageStyle.DECORATED);
-        stage.setScene(
-                new Scene(
-                        (Pane) loader.load()
-                )
-        );
-
-        UserController controller =
-                loader.getController();
-        controller.initialize(vector);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.show();
+        }
     }
 }
