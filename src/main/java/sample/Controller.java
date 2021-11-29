@@ -1,9 +1,4 @@
 package sample;
-import com.mongodb.BasicDBObject;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,12 +17,13 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.bson.Document;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.xml.soap.Node;
 import java.io.IOException;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 import static sample.PasswordUtils.*;
 
@@ -67,8 +63,10 @@ public class Controller {
     private List <KeyEntity> allKeyPressed;
     private int counter = 0;
     private double[] vector;
-    private static final String DB_NAME = "bmil";
-    private static final String COLLECTION_NAME = "users";
+    private static final String URL = "jdbc:postgresql://127.0.0.1:5432/bmil";
+    private static final String USERNAME = "";
+    private static final String PASSWORD = "";
+    private static final String UPDATE_USER_QUERY = "insert into users (name,password,vector) values(?,?,?)";
 
     @FXML
     private void initialize() {
@@ -154,16 +152,13 @@ public class Controller {
         vectorParamLabel.setText(Arrays.toString(vector));
     }
 
-    public void saveUser(ActionEvent actionEvent) throws IOException {
-        try (MongoClient mongoClient = MongoClients.create()) {
-            MongoDatabase database = mongoClient.getDatabase(DB_NAME);
-            MongoCollection collection = database.getCollection(COLLECTION_NAME);
-            Document user = new Document();
-            user.put("name", name.getText());
-            user.put("email","fghg");
-            user.put("password", BCrypt.hashpw(passw.getText(),BCrypt.gensalt()));
-            user.put("vector",Arrays.toString(vector));
-            collection.insertOne(user);
+    public void saveUser(ActionEvent actionEvent) throws IOException, SQLException {
+        try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(UPDATE_USER_QUERY)) {
+            stmt.setString(1,name.getText());
+            stmt.setString(2,BCrypt.hashpw(passw.getText(),BCrypt.gensalt()));
+            stmt.setString(3,Arrays.toString(vector));
+            stmt.executeUpdate();
 
         }
     }
