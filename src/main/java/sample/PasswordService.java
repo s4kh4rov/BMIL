@@ -1,6 +1,14 @@
 package sample;
 
+import com.mongodb.client.*;
+import org.bson.Document;
+import org.json.JSONArray;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.*;
+
+import static sample.DBConstants.COLLECTION_NAME;
+import static sample.DBConstants.DB_NAME;
 
 public class PasswordService {
     private Map<String, KeyEntity> clampedKeys;
@@ -8,6 +16,9 @@ public class PasswordService {
     private KeyEntity prevKeyEntity;
     private boolean isOverlay;
     private int AMPLITUDE = 2;
+    private static double maxErr = 0.2;
+    private String userNotFound = "Пользователь не найден";
+
     public boolean isOverlay() {
         return isOverlay;
     }
@@ -94,11 +105,43 @@ public class PasswordService {
                 haar = calculateHaar(k, i, list.get(k).getUpTime() - list.get(k).getDownTime());
                 sum += result * haar;
             }
-            vector[i]= sum*countVariable;
-            sum=0;
+            vector[i] = sum * countVariable;
+            sum = 0;
 
         }
         return vector;
+    }
+
+    public String userIdentification(double[] vector) {
+        try (MongoClient mongoClient = MongoClients.create()) {
+            MongoDatabase database = mongoClient.getDatabase(DB_NAME);
+            MongoCollection collection = database.getCollection(COLLECTION_NAME);
+            MongoCursor<Document> cursor = collection.find().iterator();
+            while (cursor.hasNext()) {
+                try {
+                    Document document = cursor.next();
+                    JSONArray dbVector = new JSONArray(document.get("vector").toString());
+                    if(compareVector(dbVector,vector)) {
+                        return document.get("name").toString();
+                    }
+                } catch (Exception e) {
+                }
+            }
+
+        }
+        return userNotFound;
+    }
+
+    public static boolean compareVector(JSONArray v1, double[] v2) {
+        if (v1.length() != v2.length) {
+            return false;
+        }
+        for (int i = 0; i < v2.length; i++) {
+            if (Math.abs(v2[i]) - Math.abs(v1.getDouble(i)) > maxErr) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private enum OverlayType {

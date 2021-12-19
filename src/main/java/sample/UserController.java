@@ -14,23 +14,27 @@ import org.bson.Document;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Arrays;
+import java.util.UUID;
+
+import static sample.DBConstants.COLLECTION_NAME;
+import static sample.DBConstants.DB_NAME;
 
 public class UserController {
     @FXML
     private TextField name;
     @FXML
     private TextField email;
-    @FXML
-    private PasswordField password;
+
     @FXML
     private Button save;
-    private static final String DB_NAME = "bmil";
-    private static final String COLLECTION_NAME = "users";
+
     private double[] vector;
+    private String password;
 
 
-    public void initialize(double[] vector) {
+    public void initialize(double[] vector,String password) {
         this.vector = vector;
+        this.password = password;
     }
 
     public void saveUser(ActionEvent actionEvent) {
@@ -40,7 +44,7 @@ public class UserController {
             Document user = new Document();
             user.put("name", name.getText());
             user.put("email",email.getText());
-            user.put("password", BCrypt.hashpw(password.getText(),BCrypt.gensalt()));
+            user.put("password", BCrypt.hashpw(password,BCrypt.gensalt()));
             user.put("vector",Arrays.toString(vector));
             collection.insertOne(user);
 

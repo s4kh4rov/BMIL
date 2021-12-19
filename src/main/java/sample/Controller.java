@@ -1,4 +1,5 @@
 package sample;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -49,6 +50,9 @@ public class Controller {
     private Label overlay;
     @FXML
     private Label vectorParamLabel;
+    @FXML
+    private Label identUserName;
+
 
     private String password;
     private List<Long> passwordDynamic;
@@ -56,7 +60,7 @@ public class Controller {
     private XYChart.Series barChartSeries = new XYChart.Series();
     private XYChart.Series lineChartSeries = new XYChart.Series();
     private PasswordService passwordService;
-    private List <KeyEntity> allKeyPressed;
+    private List<KeyEntity> allKeyPressed;
     private int counter = 0;
     private double[] vector;
 
@@ -137,6 +141,7 @@ public class Controller {
         passwordDynamic.clear();
         vectorParamLabel.setText("");
         allKeyPressed.clear();
+        identUserName.setText("");
 
     }
 
@@ -161,8 +166,34 @@ public class Controller {
 
         UserController controller =
                 loader.getController();
-        controller.initialize(vector);
+        controller.initialize(vector, password);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.show();
     }
+
+    public void identification(ActionEvent actionEvent) {
+        identUserName.setText("Имя пользователя : " + passwordService.userIdentification(vector));
+    }
+
+    public void verification(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource(
+                        "/verification.fxml"
+                )
+        );
+
+        Stage stage = new Stage(StageStyle.DECORATED);
+        stage.setScene(
+                new Scene(
+                        (Pane) loader.load()
+                )
+        );
+
+        VerificationController controller =
+                loader.getController();
+        controller.initialize(vector,password);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.show();
+    }
+
 }

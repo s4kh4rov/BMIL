@@ -10,7 +10,5 @@
       <TextField fx:id="email" layoutX="163.0" layoutY="135.0" />
       <Label layoutX="54.0" layoutY="98.0" prefHeight="18.0" prefWidth="62.0" text="Имя" />
       <Label layoutX="54.0" layoutY="139.0" prefHeight="18.0" prefWidth="61.0" text="Почта" />
-      <Label layoutX="54.0" layoutY="179.0" prefHeight="18.0" prefWidth="70.0" text="Пароль" />
-      <PasswordField fx:id="password" layoutX="163.0" layoutY="175.0" />
    </children>
 </AnchorPane>
