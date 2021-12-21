@@ -1,24 +1,22 @@
 package sample;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.client.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import org.bson.Document;
-import org.bson.types.ObjectId;
+
 import org.json.JSONArray;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.*;
 import java.util.Arrays;
 
-import static com.mongodb.client.model.Filters.eq;
-import static sample.DBConstants.COLLECTION_NAME;
-import static sample.DBConstants.DB_NAME;
+import static sample.DBConstants.*;
+import static sample.UserQueries.SELECT_ALL_USERS;
+import static sample.UserQueries.SELECT_USER_BY_ID;
+
 
 public class VerificationController {
     @FXML
@@ -38,23 +36,25 @@ public class VerificationController {
     }
 
     public void verification(ActionEvent actionEvent) {
-        try (MongoClient mongoClient = MongoClients.create()) {
-            MongoDatabase database = mongoClient.getDatabase(DB_NAME);
-            MongoCollection collection = database.getCollection(COLLECTION_NAME);
-            Document document = (Document) collection.find(eq("_id", new ObjectId(id.getText()))).first();
-            if (document == null) {
+        try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(SELECT_USER_BY_ID)) {
+            stmt.setInt(1,Integer.parseInt(id.getText()));
+            ResultSet set = stmt.executeQuery();
+            if (!set.next()) {
                 showResult(UNSUCCESSFULLY);
                 return;
             }
-            JSONArray dbVector = new JSONArray(document.get("vector").toString());
-            if (document.get("_id").toString().equals(id.getText()) &&
-                    BCrypt.checkpw(passwd, document.get("password").toString()) &&
+            JSONArray dbVector = new JSONArray(set.getArray("vector").toString());
+            if (set.getString("id").equals(id.getText()) &&
+                    BCrypt.checkpw(passwd, set.getString("password")) &&
                     PasswordService.compareVector(dbVector, vector)) {
                 showResult(SUCCESSFULLY);
             } else {
                 showResult(UNSUCCESSFULLY);
             }
 
+        } catch (SQLException throwables) {
+            System.out.println(throwables.fillInStackTrace());
         }
     }
 

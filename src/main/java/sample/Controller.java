@@ -1,10 +1,6 @@
 package sample;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,7 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.bson.Document;
+
 
 import javax.xml.soap.Node;
 import java.io.IOException;
@@ -52,7 +48,7 @@ public class Controller {
     private Label vectorParamLabel;
     @FXML
     private Label identUserName;
-
+    ;
 
     private String password;
     private List<Long> passwordDynamic;

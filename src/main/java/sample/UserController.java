@@ -1,23 +1,24 @@
 package sample;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.bson.Document;
+
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static sample.DBConstants.COLLECTION_NAME;
-import static sample.DBConstants.DB_NAME;
+import static sample.DBConstants.*;
+import static sample.UserQueries.UPDATE_USER_QUERY;
 
 public class UserController {
     @FXML
@@ -32,21 +33,19 @@ public class UserController {
     private String password;
 
 
+
     public void initialize(double[] vector,String password) {
         this.vector = vector;
         this.password = password;
     }
 
-    public void saveUser(ActionEvent actionEvent) {
-        try (MongoClient mongoClient = MongoClients.create()) {
-            MongoDatabase database = mongoClient.getDatabase(DB_NAME);
-            MongoCollection collection = database.getCollection(COLLECTION_NAME);
-            Document user = new Document();
-            user.put("name", name.getText());
-            user.put("email",email.getText());
-            user.put("password", BCrypt.hashpw(password,BCrypt.gensalt()));
-            user.put("vector",Arrays.toString(vector));
-            collection.insertOne(user);
+    public void saveUser(ActionEvent actionEvent) throws SQLException {
+        try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(UPDATE_USER_QUERY)) {
+            stmt.setString(1,name.getText());
+            stmt.setString(2,BCrypt.hashpw(password,BCrypt.gensalt()));
+            stmt.setString(3,Arrays.toString(vector));
+            stmt.executeUpdate();
 
         }
         ((Stage)save.getScene().getWindow()).close();

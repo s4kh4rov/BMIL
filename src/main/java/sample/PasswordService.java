@@ -1,14 +1,16 @@
 package sample;
 
-import com.mongodb.client.*;
-import org.bson.Document;
+
 import org.json.JSONArray;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.*;
 import java.util.*;
 
-import static sample.DBConstants.COLLECTION_NAME;
-import static sample.DBConstants.DB_NAME;
+import static sample.DBConstants.*;
+import static sample.UserQueries.SELECT_ALL_USERS;
+import static sample.UserQueries.UPDATE_USER_QUERY;
+
 
 public class PasswordService {
     private Map<String, KeyEntity> clampedKeys;
@@ -113,21 +115,20 @@ public class PasswordService {
     }
 
     public String userIdentification(double[] vector) {
-        try (MongoClient mongoClient = MongoClients.create()) {
-            MongoDatabase database = mongoClient.getDatabase(DB_NAME);
-            MongoCollection collection = database.getCollection(COLLECTION_NAME);
-            MongoCursor<Document> cursor = collection.find().iterator();
-            while (cursor.hasNext()) {
+        try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+             Statement stmt = conn.createStatement()) {
+            ResultSet set = stmt.executeQuery(SELECT_ALL_USERS);
+            while (set.next()) {
                 try {
-                    Document document = cursor.next();
-                    JSONArray dbVector = new JSONArray(document.get("vector").toString());
-                    if(compareVector(dbVector,vector)) {
-                        return document.get("name").toString();
+                    JSONArray dbVector = new JSONArray(set.getArray("vector").toString());
+                    if (compareVector(dbVector, vector)) {
+                        return set.getString("name");
                     }
                 } catch (Exception e) {
                 }
             }
 
+        } catch (SQLException throwables) {
         }
         return userNotFound;
     }
